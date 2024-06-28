@@ -1,5 +1,5 @@
 import {GridColDef, gridDateComparator, GridSortDirection, GridSortItem} from "@mui/x-data-grid";
-import {buildStatusData, splitDateTime} from "../../../utils/helpers.tsx";
+import {buildNameEmail, buildStatusData, splitDateTime} from "../../../utils/helpers.tsx";
 import {Report} from "../../../commons/interfaces/Report.ts";
 import {buildRiskScoreData} from "../../../utils/helpers.tsx";
 import {DoubleLineCell, IconTextCell} from "../../../commons/components";
@@ -53,7 +53,10 @@ export const columns: GridColDef<Report>[] = [
     flex: 0.7,
     resizable: false,
     disableColumnMenu: true,
-    renderCell: ({row}) => <DoubleLineCell firstValue={row.name} secondValue={row.email}/>
+    renderCell: ({row}) => {
+      const {name, email} = buildNameEmail(row);
+      return <DoubleLineCell firstValue={name} secondValue={email}/>
+    }
   },
   {
     field: 'type',

@@ -1,30 +1,42 @@
-// todo add right types or remove in case it is a non related string
-export enum RecordType {
-  AISCAN1 = "aiscan1",
-  AISCAN2 = "aiscan2",
-}
-
-// todo add all risk scores
 export enum RiskScore {
-  LOW = "LOW",
-  HIGH = "HIGH",
-  NOT_CALCULATED = "Not calculated"
+  LOW = "low",
+  HIGH = "high",
+  MEDIUM = "medium"
 }
 
-// todo add all statuses
+// Added just currentCategory to be able to check if value exists
+export interface RiskScoring {
+  currentCategory?: RiskScore;
+}
+
 export enum Status {
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
-  IN_PROGRESS = "IN_PROGRESS",
-  READY_FOR_REVIEW = "READY_FOR_REVIEW",
-  CANCELLED = "CANCELLED",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
+  IN_PROGRESS = "In Progress",
+  READY_FOR_REVIEW = "Ready For Review",
+  CANCELLED = "Cancelled",
+}
+
+export enum AttributeLabel {
+  FIRST_NAME = "First name",
+  MIDDLE_NAME = "Middle name",
+  LAST_NAME = "Last name",
+  DATE_OF_BIRTH = "Date of birth",
+  NATIONALITY = "Nationality",
+  COUNTRY_OF_RESIDENCY = "Country of residency",
+  EMAIL = "Email",
+}
+
+export interface ReportAttribute {
+  label: AttributeLabel;
+  value: string;
 }
 
 export interface Report {
+  id: string;
   createdAt: string;
-  name: string;
-  email: string;
-  type: RecordType;
-  riskScore: RiskScore;
-  status: Status;
+  attributes: {[key: string]: ReportAttribute};
+  type: string;
+  riskScoring: RiskScoring;
+  statusName: Status;
 }

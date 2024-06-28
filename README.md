@@ -1,10 +1,39 @@
 # React + TypeScript + Vite
 
-## This is a home assigment (1 day)
+## This is a home assigment (2 days)
 This is a basic reposts dashboard that retrieves/shows reports from a mocked Promise. Stack:
 - React + TS + Vite
 - MUI + MUI Charts + MUI DataGrid is used
 - react-router-dom
+
+## This application uses a secret key VITE_API_SECRET_KEY
+This key is used to be able to access data from homework server.
+For local testing:
+- Create .env file. Add VITE_API_SECRET_KEY to .env file.
+
+To test on production services:
+- ### Vercel:
+    Go to your Vercel dashboard.
+    Select your project.
+    Go to the "Settings" tab.
+    Navigate to the "Environment Variables" section.
+    Add your environment variables (e.g., VITE_API_SECRET_KEY).
+
+
+- ### Netlify:
+    Go to your Netlify dashboard.
+    Select your site.
+    Go to "Site settings".
+    Under "Build & deploy", find "Environment".
+    Add your environment variables (e.g., VITE_API_SECRET_KEY).
+
+
+- ### GitHub Actions:
+    Go to your repository on GitHub.
+    Click on "Settings".
+    Navigate to "Secrets and variables" > "Actions".
+    Add your secrets (e.g., VITE_API_SECRET_KEY).
+    
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

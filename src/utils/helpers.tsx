@@ -1,4 +1,4 @@
-import {Report, RiskScore, Status} from "../commons/interfaces/Report.ts";
+import {AttributeLabel, Report, ReportAttribute, RiskScore, Status} from "../commons/interfaces/Report.ts";
 import {ReactNode} from "react";
 import {Check, CheckCircle, Close, Info, MoreHoriz, ThumbDownAlt, Visibility} from "@mui/icons-material";
 
@@ -7,10 +7,43 @@ interface DateTimeParts {
   time: string;
 }
 
+export const buildNameEmail = (report: Report): {name: string, email: string}=> {
+  let firstName = '';
+  let middleName = '';
+  let lastName = '';
+  let email = '';
+
+  Object.values(report.attributes).forEach((item: ReportAttribute) => {
+    switch (item.label) {
+      case AttributeLabel.FIRST_NAME: {
+        firstName = item.value;
+        break;
+      }
+      case AttributeLabel.MIDDLE_NAME: {
+        middleName = item.value;
+        break;
+      }
+      case AttributeLabel.LAST_NAME: {
+        lastName = item.value;
+        break;
+      }
+      case AttributeLabel.EMAIL: {
+        email = item.value;
+        break;
+      }
+    }
+  })
+
+  return {name: `${firstName} ${middleName} ${lastName}`, email};
+};
+
 export const splitDateTime = (dateTimeStr: string): DateTimeParts => {
-  const parts = dateTimeStr.trim().split(/\s+/); // Split by one or more whitespace characters
-  const date = parts.slice(0, 3).join(' '); // Join the first three parts for the date
-  const time = parts.slice(3).join(' '); // Join the remaining parts for the time
+  const newDateTime = new Date(dateTimeStr);
+  const dateOptions = { year: "numeric", month: "long", day: "numeric" } as const;
+  const date = newDateTime.toLocaleDateString('en-US', dateOptions);
+
+  const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false } as const;
+  const time = newDateTime.toLocaleTimeString('en-US', timeOptions);
   return {date, time};
 }
 
@@ -29,7 +62,8 @@ export const buildDateTimeString = (date: Date): string => {
 
 export const buildRiskScoreData = (report: Report): { icon?: ReactNode, text?: string, textColor?: string } => {
   let riskScoreData = {};
-  switch (report.riskScore) {
+
+  switch (report.riskScoring.currentCategory) {
     case RiskScore.HIGH: {
       riskScoreData = {
         ...riskScoreData, icon: <Info/>, text: 'HIGH', textColor: 'darkred',
@@ -42,15 +76,9 @@ export const buildRiskScoreData = (report: Report): { icon?: ReactNode, text?: s
       }
       break;
     }
-    case RiskScore.NOT_CALCULATED: {
-      riskScoreData = {
-        ...riskScoreData, text: 'Not calculated'
-      }
-      break;
-    }
     default: {
       riskScoreData = {
-        ...riskScoreData, text: 'No data'
+        ...riskScoreData, text: 'Not calculated'
       }
     }
   }
@@ -60,7 +88,7 @@ export const buildRiskScoreData = (report: Report): { icon?: ReactNode, text?: s
 
 export const buildStatusData = (report: Report): { icon?: ReactNode, text?: string, textColor?: string } => {
   let statusData = {};
-  switch (report.status) {
+  switch (report.statusName) {
     case Status.APPROVED: {
       statusData = {
         ...statusData, icon: <Check/>, text: 'Approved',
@@ -101,23 +129,6 @@ export const buildStatusData = (report: Report): { icon?: ReactNode, text?: stri
   return statusData;
 }
 
-export const buildStatusColor = (status: Status): string => {
-  switch (status) {
-    case Status.APPROVED:
-      return '#8BC24B';
-    case Status.REJECTED:
-      return '#FF9800';
-    case Status.IN_PROGRESS:
-      return '#01A8F4';
-    case Status.READY_FOR_REVIEW:
-      return '#F5F502';
-    case Status.CANCELLED:
-      return '#FF5721';
-    default:
-      return '#fff';
-  }
-}
-
 export const buildStatusCharts = (reports: Report[]): {
   [key in Status]: {
     value: number,
@@ -126,16 +137,16 @@ export const buildStatusCharts = (reports: Report[]): {
   }
 } => {
   const defaultStatusMap = {
-    APPROVED: {value: 0, label: 'Approved', color: '#8BC24B'},
-    REJECTED: {value: 0, label: 'Rejected', color: '#FF9800'},
-    CANCELLED: {value: 0, label: 'Cancelled', color: '#FF5721'},
-    READY_FOR_REVIEW: {value: 0, label: 'Ready For Review', color: '#F5F502'},
-    IN_PROGRESS: {value: 0, label: 'In Progress', color: '#01A8F4'},
+    'Approved': {value: 0, label: 'Approved', color: '#8BC24B'},
+    'Rejected': {value: 0, label: 'Rejected', color: '#FF9800'},
+    'Cancelled': {value: 0, label: 'Cancelled', color: '#FF5721'},
+    'Ready For Review': {value: 0, label: 'Ready For Review', color: '#F5F502'},
+    'In Progress': {value: 0, label: 'In Progress', color: '#01A8F4'},
   }
 
   reports.forEach((report: Report) => {
-    if (report.status) {
-      defaultStatusMap[report.status].value += 1;
+    if (report.statusName) {
+      defaultStatusMap[report.statusName].value += 1;
     }
   })
 
