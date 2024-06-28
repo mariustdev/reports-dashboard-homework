@@ -9,7 +9,7 @@ This is a basic reposts dashboard that retrieves/shows reports from a mocked Pro
 ## This application uses a secret key VITE_API_SECRET_KEY
 This key is used to be able to access data from homework server.
 For local testing:
-- Create .env file. Add VITE_API_SECRET_KEY to .env file.
+- Create .env file at root level. Add VITE_API_SECRET_KEY to .env file.
 
 To test on production services:
 - ### Vercel:
